@@ -1,4 +1,4 @@
-# gym-ai
+# face-recognition-ai
 
 ## Project setup
 ```

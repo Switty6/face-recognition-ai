@@ -21,9 +21,10 @@ canvas {
 </style>
 <script>
 import * as faceapi from 'face-api.js';
+import store from '../store';
 
 export default {
-    name:"FaceDetector",
+    name: "FaceDetector",
     data() {
         return {
             video: {},
@@ -65,14 +66,21 @@ export default {
                 const resizedDetections = faceapi.resizeResults(detections, displaySize)
                 canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height)
                 faceapi.draw.drawDetections(canvas, resizedDetections)
-                // faceapi.draw.drawFaceLandmarks(canvas, resizedDetections)
-                // resizedDetections.forEach(detection => {
-                    // const box = detection.detection.box
-                    // const drawBoxAge = new faceapi.draw.DrawBox(box, { label:"Varsta aproximativa: "+ Math.round(detection.age)})
-                    // const drawBoxGender = new faceapi.draw.DrawBox(box, { label:"Sex: "+ detection.gender})
-                    // drawBoxAge.draw(canvas)
-                    // drawBoxGender.draw(canvas)
-                // })
+
+                // faceapi.draw.drawFaceLandmarks(canvas, resizedDetections) // Draw face debug
+                resizedDetections.forEach(detection => {
+                    let gender = ''
+                    if (detection.gender == 'male'){
+                        gender = "Masculin"
+                    }else{
+                        gender = "Feminin"
+                    }
+                    store.commit({
+                            type: "UPDATE_USER",
+                            age:Math.round(detection.age),
+                            gender:gender
+                    })
+                })
             }, 100)
         })
     }

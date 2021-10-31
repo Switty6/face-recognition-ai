@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="lol">
         <FaceDetector v-if="show"/>
         <Astra class="standby"/>
     </div>
@@ -23,5 +23,10 @@ export default {
 <style scoped>
 .standby{
     margin: 0;
+}
+.lol{
+    background: linear-gradient(45deg,#000414,#00132c,#00132c);
+    height: 100vh;
+    width: 100vw;
 }
 </style>

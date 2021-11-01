@@ -9,7 +9,8 @@ export default {
     name: 'Astra',
     data() {
         return {
-
+            amplify: 1,
+            processing: 15
         }
     },
     methods: {
@@ -59,38 +60,80 @@ export default {
             this.scene.add(this.innersphere)
         },
         SmallSphere() {
-            const geometry = new tjs.TorusGeometry(0.45,0.01,6,18,2)
-            const geometry2 = new tjs.TorusGeometry(0.4,0.01,6,18,2)
-            const geometry3 = new tjs.TorusGeometry(0.35,0.01,6,18,2)
-            const material = new tjs.MeshBasicMaterial( { color: 0x002e45 } );
-            this.torus = new tjs.Mesh( geometry,material);
-            this.torus2 = new tjs.Mesh(geometry2,material);
-            this.torus3 = new tjs.Mesh (geometry3,material);
+            const geometry = new tjs.TorusGeometry(0.45, 0.01, 6, 18, 2)
+            const geometry2 = new tjs.TorusGeometry(0.4, 0.01, 6, 18, 2)
+            const geometry3 = new tjs.TorusGeometry(0.35, 0.01, 6, 18, 2)
+            const material = new tjs.MeshBasicMaterial({ color: 0x0788be });
+            this.torus = new tjs.Mesh(geometry, material);
+            this.torus2 = new tjs.Mesh(geometry2, material);
+            this.torus3 = new tjs.Mesh(geometry3, material);
+
             this.scene.add(this.torus)
             this.scene.add(this.torus2)
             this.scene.add(this.torus3)
-            
-            this.torus.rotation.x= 1.7;
-            this.torus3.rotation.y=1.7;
+
+
+            this.torus.rotation.x = 1.8;
+            this.torus3.rotation.y = 1.8;
+
+        },
+        Cricle() {
+            const geometry = new tjs.SphereBufferGeometry(0.09, 16, 8)
+            const material = new tjs.MeshBasicMaterial({ color: 0x2c64e1, wireframe: true })
+            this.circle = new tjs.Mesh(geometry, material)
+            this.scene.add(this.circle)
+
+
         },
         animate() {
             this.sphere.rotation.y += 0.003;
             this.innersphere.rotation.y += 0.008;
-            
-            this.torus.rotation.z += 0.01;
-            this.torus2.rotation.z += 0.01;
-            this.torus3.rotation.z += 0.01;
+
+            this.torus.rotation.z += 0.02 * this.amplify;
+            this.torus2.rotation.z += 0.02 * this.amplify;
+            this.torus3.rotation.z += 0.02 * this.amplify;
+
+            this.circle.rotation.y += 0.01 * this.amplify;
 
             requestAnimationFrame(this.animate);
 
             this.renderer.render(this.scene, this.camera);
+        },
+        Decomputing(old_amplify) {
+            const deprocess = setInterval(() => {
+                this.amplify -= 0.2
+                if (this.amplify <= old_amplify) {
+                    this.amplify = old_amplify
+                    clearInterval(deprocess)
+                }
+            }, 100)
+        },
+        ComputingPower() {
+            const old_amplify = this.amplify
+            const new_processing = this.amplify * this.processing
+            console.log(new_processing)
+
+            const interval = setInterval(() => {
+                this.amplify += 0.1
+                if (this.amplify >= new_processing) {
+                    setTimeout(() => {
+                        this.Decomputing(old_amplify)
+                    }, 3000)
+                    clearInterval(interval)
+                }
+            }, 100)
         }
     },
     mounted() {
         this.tjsStart()
         this.InnerSphere()
         this.SmallSphere()
+        this.Cricle()
         this.animate()
+        setTimeout(() => {
+            this.ComputingPower()
+        }, 3000)
+
 
     }
 }

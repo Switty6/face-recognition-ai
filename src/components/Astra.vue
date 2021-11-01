@@ -10,7 +10,8 @@ export default {
     data() {
         return {
             amplify: 1,
-            processing: 15
+            processing: 15,
+            sphereAmplify: 1
         }
     },
     methods: {
@@ -51,18 +52,17 @@ export default {
             this.scene.add(this.light)
         },
         InnerSphere() {
-            const geometry = new tjs.SphereBufferGeometry(.56, 21, 21)
-            const material = new tjs.PointsMaterial({
-                size: 0.005,
+            const geometry = new tjs.SphereBufferGeometry(.56, 1,1)
+            const material = new tjs.LineBasicMaterial({
                 color: 0x62D6F4
             })
-            this.innersphere = new tjs.Points(geometry, material)
+            this.innersphere = new tjs.Line(geometry, material)
             this.scene.add(this.innersphere)
         },
         SmallSphere() {
-            const geometry = new tjs.TorusGeometry(0.45, 0.01, 6, 18, 2)
-            const geometry2 = new tjs.TorusGeometry(0.4, 0.01, 6, 18, 2)
-            const geometry3 = new tjs.TorusGeometry(0.35, 0.01, 6, 18, 2)
+            const geometry = new tjs.TorusGeometry(0.25, 0.01, 6, 18, 2)
+            const geometry2 = new tjs.TorusGeometry(0.2, 0.01, 6, 18, 2)
+            const geometry3 = new tjs.TorusGeometry(0.15, 0.01, 6, 18, 2)
             const material = new tjs.MeshBasicMaterial({ color: 0x0788be });
             this.torus = new tjs.Mesh(geometry, material);
             this.torus2 = new tjs.Mesh(geometry2, material);
@@ -78,7 +78,7 @@ export default {
 
         },
         Cricle() {
-            const geometry = new tjs.SphereBufferGeometry(0.09, 16, 8)
+            const geometry = new tjs.SphereBufferGeometry(0.09, 8, 8)
             const material = new tjs.MeshBasicMaterial({ color: 0x2c64e1, wireframe: true })
             this.circle = new tjs.Mesh(geometry, material)
             this.scene.add(this.circle)
@@ -86,8 +86,8 @@ export default {
 
         },
         animate() {
-            this.sphere.rotation.y += 0.003;
-            this.innersphere.rotation.y += 0.008;
+            this.sphere.rotation.y += 0.003 * this.sphereAmplify;
+            this.innersphere.rotation.y += 0.008 * this.sphereAmplify;
 
             this.torus.rotation.z += 0.02 * this.amplify;
             this.torus2.rotation.z += 0.02 * this.amplify;
@@ -97,13 +97,29 @@ export default {
 
             requestAnimationFrame(this.animate);
 
+
+
             this.renderer.render(this.scene, this.camera);
         },
         Decomputing(old_amplify) {
             const deprocess = setInterval(() => {
                 this.amplify -= 0.2
+                if (this.amplify < 5) {
+                    this.torus.material.color = new tjs.Color(0x0788be)
+                    this.camera.position.y += 0.004
+                }
+                if (this.amplify <= 8.0) {
+                    this.sphereAmplify -= 0.1
+                    this.circle.material.color = new tjs.Color(0x2c64e1)
+                    this.camera.position.y += 0.004
+
+
+
+                }
                 if (this.amplify <= old_amplify) {
-                    this.amplify = old_amplify
+                    this.camera.position.y = 0
+                    this.sphereAmplify =
+                        this.amplify = old_amplify
                     clearInterval(deprocess)
                 }
             }, 100)
@@ -111,10 +127,22 @@ export default {
         ComputingPower() {
             const old_amplify = this.amplify
             const new_processing = this.amplify * this.processing
-            console.log(new_processing)
 
             const interval = setInterval(() => {
                 this.amplify += 0.1
+                if (this.amplify < 10.0 && this.amplify >= 7.0) {
+                    this.torus.material.color = new tjs.Color(0xb8a804)
+                    this.sphereAmplify += 0.18
+                    this.camera.position.y -= 0.007
+
+                    console.log(this.sphereAmplify)
+                } else if (this.amplify >= 10.0) {
+                    this.circle.material.color = new tjs.Color(0xbb0202)
+
+                    if (this.sphereAmplify > 6) {
+                        this.sphereAmplify = 6
+                    }
+                }
                 if (this.amplify >= new_processing) {
                     setTimeout(() => {
                         this.Decomputing(old_amplify)
@@ -130,9 +158,7 @@ export default {
         this.SmallSphere()
         this.Cricle()
         this.animate()
-        setTimeout(() => {
-            this.ComputingPower()
-        }, 3000)
+        this.ComputingPower()
 
 
     }

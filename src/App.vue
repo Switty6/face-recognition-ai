@@ -1,43 +1,133 @@
 <template>
     <div class="lol">
-        <FaceDetector v-if="show"/>
-        <Astra class="astra"/>
-        <div class="text-h6 text-center q-pt-xl text-white monospacerr">Astra A.I</div>
+        <FaceDetector v-if="detector" />
+        <transition name="fade">
+            <div v-if="astra">
+                <div class="text-h4 text-center q-pt-xl text-white monospace">Astra A.I</div>
+                <Astra class="astra" />
+            </div>
+        </transition>
 
+        <div class="row justify-center items-center text-center full-height full-width">
+            <transition name="fadeshort">
+                <div
+                    v-if="bootList.boot"
+                    class="text-h2 text-white monospace"
+                >Booting sequence initiated...</div>
+            </transition>
+            <transition name="fadeshort">
+                <div
+                    v-if="bootList.bootStart"
+                    class="text-h2 text-white monospace"
+                >Waking up the A.I</div>
+            </transition>
+            <transition name="fadeshort">
+                <div
+                    v-if="bootList.bootInit"
+                    class="text-h2 text-white monospace"
+                >A.I is up and ready at your service</div>
+            </transition>
+            <transition name="fadeshort">
+                <div
+                    v-if="bootList.bootCredits"
+                    class="text-h2 text-white monospace"
+                >SwitHub presents</div>
+            </transition>
+        </div>
     </div>
-
 </template>
 <script>
 import FaceDetector from "./components/FaceDetector.vue";
 import Astra from "./components/Astra.vue";
-
+import store from './store';
 
 export default {
     components: { FaceDetector, Astra },
-    data(){
+    data() {
         return {
-            show:false
+            detector: store.state.detector,
+            astra: false,
+            bootList: {
+                boot: false,
+                bootStart: false,
+                bootInit: false,
+                bootCredits: false,
+            }
+
+
         }
+    },
+    methods: {
+        BootUp() {
+            this.bootList.boot = true
+            setTimeout(() => {
+                this.bootList.boot = false
+                setTimeout(() => {
+                    this.bootList.bootStart = true
+                    setTimeout(() => {
+                        this.bootList.bootStart = false
+                        setTimeout(() => {
+                            this.bootList.bootInit = true
+                            setTimeout(() => {
+                                this.bootList.bootInit = false
+                                setTimeout(() => {
+                                    this.bootList.bootCredits = true
+                                    setTimeout(() => {
+                                        this.bootList.bootCredits = false
+                                        setTimeout(() => {
+                                            this.astra = true
+                                        }, 2500)
+                                    }, 3000)
+                                }, 1500)
+                            }, 2500)
+                        }, 1500)
+                    }, 3000)
+                }, 3000)
+            }, 3000)
+        }
+    },
+    mounted() {
+        setTimeout(() => { this.BootUp() }, 1000)
     }
 }
 </script>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Cutive+Mono&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Cutive+Mono&display=swap");
 
-.monospacerr{
-    font-family: 'Cutive Mono', monospace;
+body {
+  overflow: hidden; /* Hide scrollbars */
+}
+.monospace {
+    font-family: "Cutive Mono", monospace;
 }
 
-.standby{
-    margin: 0;
-}
-.lol{
-    background: linear-gradient(45deg,#000414,#00132c,#00132c);
+.lol {
+    background: linear-gradient(45deg, #000414, #00132c, #00132c);
     height: 100vh;
     width: 100vw;
 }
-.astra{
-    z-index:-1
+.astra {
+    margin: 0;
+    z-index: -1;
+}
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 2s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
+}
+
+.fadeshort-enter-active,
+.fadeshort-leave-active {
+    transition: opacity 1s ease;
+}
+
+.fadeshort-enter-from,
+.fadeshort-leave-to {
+    opacity: 0;
 }
 </style>

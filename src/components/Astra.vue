@@ -1,5 +1,7 @@
 <template>
-    <canvas style="background:transparent;"></canvas>
+    <transition name="fade">
+        <canvas style="background:transparent;"></canvas>
+    </transition>
 </template>
 
 <script>
@@ -11,6 +13,7 @@ export default {
         return {
             amplify: 1,
             processing: 15,
+            normalProcessing:6.8,
             sphereAmplify: 1
         }
     },
@@ -52,7 +55,7 @@ export default {
             this.scene.add(this.light)
         },
         InnerSphere() {
-            const geometry = new tjs.SphereBufferGeometry(.56, 1,1)
+            const geometry = new tjs.SphereBufferGeometry(.56, 1, 1)
             const material = new tjs.LineBasicMaterial({
                 color: 0x62D6F4
             })
@@ -87,7 +90,7 @@ export default {
         },
         animate() {
             this.sphere.rotation.y += 0.003 * this.sphereAmplify;
-            this.innersphere.rotation.y += 0.008 * this.sphereAmplify;
+            this.innersphere.rotation.y += 0.008 * this.sphereAmplify * 2;
 
             this.torus.rotation.z += 0.02 * this.amplify;
             this.torus2.rotation.z += 0.02 * this.amplify;
@@ -106,15 +109,13 @@ export default {
                 this.amplify -= 0.2
                 if (this.amplify < 5) {
                     this.torus.material.color = new tjs.Color(0x0788be)
-                    this.camera.position.y += 0.004
+                }
+                if (this.amplify > 7.0){
+                    this.camera.position.y += 0.005
                 }
                 if (this.amplify <= 8.0) {
                     this.sphereAmplify -= 0.1
                     this.circle.material.color = new tjs.Color(0x2c64e1)
-                    this.camera.position.y += 0.004
-
-
-
                 }
                 if (this.amplify <= old_amplify) {
                     this.camera.position.y = 0
@@ -124,9 +125,10 @@ export default {
                 }
             }, 100)
         },
-        ComputingPower() {
+        ComputingPower(processing) {
             const old_amplify = this.amplify
-            const new_processing = this.amplify * this.processing
+            const new_processing = this.amplify * processing
+
 
             const interval = setInterval(() => {
                 this.amplify += 0.1
@@ -150,7 +152,8 @@ export default {
                     clearInterval(interval)
                 }
             }, 100)
-        }
+        },
+        
     },
     mounted() {
         this.tjsStart()
@@ -158,7 +161,7 @@ export default {
         this.SmallSphere()
         this.Cricle()
         this.animate()
-        this.ComputingPower()
+        this.ComputingPower(this.processing)
 
 
     }

@@ -85,8 +85,6 @@ export default {
             const material = new tjs.MeshBasicMaterial({ color: 0x2c64e1, wireframe: true })
             this.circle = new tjs.Mesh(geometry, material)
             this.scene.add(this.circle)
-
-
         },
         animate() {
             this.sphere.rotation.y += 0.003 * this.sphereAmplify;
@@ -99,8 +97,6 @@ export default {
             this.circle.rotation.y += 0.01 * this.amplify;
 
             requestAnimationFrame(this.animate);
-
-
 
             this.renderer.render(this.scene, this.camera);
         },

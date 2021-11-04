@@ -13,6 +13,7 @@ export default createStore({
     UPDATE_USER(state,payload){
       state.user.age = payload.age
       state.user.gender = payload.gender
+      state.user.mood = payload.mood
     },
     UPDATE_ASTRA(state,payload){
       state.astra = payload.astra

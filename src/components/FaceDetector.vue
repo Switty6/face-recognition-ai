@@ -70,15 +70,34 @@ export default {
                 // faceapi.draw.drawFaceLandmarks(canvas, resizedDetections) // Draw face debug
                 resizedDetections.forEach(detection => {
                     let gender = ''
+                    let mood = {expression:'',nr:0}
                     if (detection.gender == 'male'){
                         gender = "Masculin"
                     }else{
                         gender = "Feminin"
                     }
+                    for (let expression in detection.expressions){
+                        // if (detection.expressions[expression] < 1){
+                            mood.nr = Math.max(mood.nr,detection.expressions[expression])
+                            if (mood.nr == detection.expressions[expression]){
+                                mood.expression = expression
+                            }
+                        // }
+                    }
+                    switch (mood.expression){
+                        case "neutral": mood.expression = "neutra"; break;
+                        case "angry": mood.expression = "furios"; break;
+                        case "surprised": mood.expression = "surprins"; break;
+                        case "sad": mood.expression = "trist"; break;
+                        case "disgusted": mood.expression = "dezgustat"; break;
+                        case "fearful": mood.expression = "anxios"; break;
+                        case "happy": mood.expression = "fericit"; break;
+                    }
                     store.commit({
                             type: "UPDATE_USER",
                             age:Math.round(detection.age),
-                            gender:gender
+                            gender:gender,
+                            mood:mood.expression
                     })
                 })
             }, 100)

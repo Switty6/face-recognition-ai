@@ -1,6 +1,12 @@
 <template>
     <div class="lol">
-        <FaceDetector v-if="detector" />
+        <div class="text-h6 text-white monospace">Gen: {{gen}} </div>
+        <div class="text-h6 text-white monospace">Expresie faciala: {{mood}}</div>
+        <div class="text-h6 text-white monospace">Varsta aproximativa: {{age}}</div>
+
+        <div class="row justify-center items-center full-height" >
+            <FaceDetector v-if="detector" class="justify-center items-center"/>
+        </div>
         <transition name="fade">
             <div v-if="astra">
                 <div class="text-h4 text-center q-pt-xl text-white monospace">Astra A.I</div>
@@ -8,7 +14,10 @@
             </div>
         </transition>
 
-        <div class="row justify-center items-center text-center full-height full-width">
+        <div
+            v-if="texter"
+            class="row justify-center items-center text-center full-height full-width"
+        >
             <transition name="fadeshort">
                 <div
                     v-if="bootList.boot"
@@ -45,15 +54,18 @@ export default {
     components: { FaceDetector, Astra },
     data() {
         return {
-            detector: store.state.detector,
+            detector: true,
             astra: false,
+            texter: false,
             bootList: {
                 boot: false,
                 bootStart: false,
                 bootInit: false,
                 bootCredits: false,
-            }
-
+            },
+            gen:'',
+            mood:'',
+            age:''
 
         }
     },
@@ -87,7 +99,12 @@ export default {
         }
     },
     mounted() {
-        setTimeout(() => { this.BootUp() }, 1000)
+        setInterval(()=>{
+           this.gen = store.state.user.gender
+           this.mood = store.state.user.mood
+           this.age = store.state.user.age
+        },500)
+        // setTimeout(() => { this.BootUp() }, 1000)
     }
 }
 </script>
@@ -96,7 +113,7 @@ export default {
 @import url("https://fonts.googleapis.com/css2?family=Cutive+Mono&display=swap");
 
 body {
-  overflow: hidden; /* Hide scrollbars */
+    overflow: hidden; /* Hide scrollbars */
 }
 .monospace {
     font-family: "Cutive Mono", monospace;

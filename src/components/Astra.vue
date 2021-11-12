@@ -133,7 +133,7 @@ export default {
                     this.sphereAmplify += 0.18
                     this.camera.position.y -= 0.007
 
-                    console.log(this.sphereAmplify)
+                    // console.log(this.sphereAmplify)
                 } else if (this.amplify >= 10.0) {
                     this.circle.material.color = new tjs.Color(0xbb0202)
 

@@ -4,7 +4,8 @@ export default createStore({
   state: {
     user:{
       age:0,
-      gender:''
+      gender:'',
+      mood:'',
     },
     detector: false,
     astra: false

@@ -1,6 +1,6 @@
 <template>
     <div class="column items-center">
-        <video class="col" id="video" ref="video" width="720" height="560" autoplay></video>
+        <video id="video" ref="video" width="900" height="680" autoplay></video>
     </div>
 </template>
 
@@ -17,6 +17,10 @@ body {
 
 canvas {
     position: absolute;
+}
+video{
+    border:3px solid rgba(3, 71, 197, 0.664);
+    border-radius:5px;
 }
 </style>
 <script>
@@ -67,7 +71,7 @@ export default {
                 canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height)
                 faceapi.draw.drawDetections(canvas, resizedDetections)
 
-                // faceapi.draw.drawFaceLandmarks(canvas, resizedDetections) // Draw face debug
+                faceapi.draw.drawFaceLandmarks(canvas, resizedDetections) // Draw face debug
                 resizedDetections.forEach(detection => {
                     let gender = ''
                     let mood = {expression:'',nr:0}

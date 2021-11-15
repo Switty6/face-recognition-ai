@@ -1,6 +1,8 @@
 <template>
     <div class="lol">
-        <div id="typewriter" class="text-h4 text-white">Text</div>
+        <div class="row items-center full-height">
+            <div v-if="boot" id="typewriter" class="text-h5 col-12 text-white text-center"></div>
+        </div>
         <div v-if="detector" class="row items-center full-height">
             <FaceDetector class="col-12" />
             <div style="position:absolute;">
@@ -13,13 +15,13 @@
                 >Varsta aproximativa: {{ age }}</div>
             </div>
         </div>
-<!-- https://www.npmjs.com/package/typewriter-effect -->
+        <!-- https://www.npmjs.com/package/typewriter-effect -->
         <div v-if="astra">
+            <div class="text-h3">Astra A.I</div>
             <Astra class="astra" />
         </div>
     </div>
 </template>
-<!-- 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 token -->
 <script>
 import FaceDetector from "./components/FaceDetector.vue";
 import Astra from "./components/Astra.vue";
@@ -30,39 +32,69 @@ export default {
     components: { FaceDetector, Astra },
     data() {
         return {
-            detector: false,
-            astra: true,
+            detector: true,
+            astra: false,
+            boot: true,
             gen: '',
             mood: '',
-            age: ''
+            age: '',
+            started: true
 
         }
     },
     methods: {
+        CheckStart() {
+            if (!this.started) {
+                setTimeout(() => {
+                    this.boot = false
+                    this.astra = true
+                }, 38000);
+                let app = document.getElementById('typewriter');
 
+                let typewriter = new Typewriter(app, {
+                    loop: true,
+                    delay: 40,
+                });
+
+                typewriter
+                    .pauseFor(1000)
+                    .typeString('Initializing booting sequence...')
+                    .pauseFor(4500)
+                    .deleteChars(40)
+                    .typeString('Waking up the Astra Artificial Intelligence.')
+                    .pauseFor(4500)
+                    .deleteChars(100)
+                    .typeString('<strong>Boot-up complete!</strong>')
+                    .pauseFor(4500)
+                    .start()
+            } else {
+                this.boot = false
+                this.astra = true
+            }
+        },
+        DetectorCheck(){
+            setInterval(()=>{
+                if(this.detector){
+                    this.astra = false
+                    this.UpdateStore()
+                }
+            },1000)
+        },
+        UpdateStore() {
+            while (this.detector) {
+                setInterval(() => {
+                    console.log("DETECTOR")
+                    this.gen = store.state.user.gender
+                    this.mood = store.state.user.mood
+                    this.age = store.state.user.age
+                }, 500)
+            }
+        }
     },
     mounted() {
-        setInterval(() => {
-            this.gen = store.state.user.gender
-            this.mood = store.state.user.mood
-            this.age = store.state.user.age
-        }, 500)
-        let app = document.getElementById('typewriter');
+        this.CheckStart()
+        this.DetectorCheck()
 
-        let typewriter = new Typewriter(app, {
-            loop: true,
-            delay: 75,
-        });
-
-        typewriter
-            .pauseFor(2500)
-            .typeString('A simple yet powerful native javascript')
-            .pauseFor(300)
-            .deleteChars(10)
-            .typeString('<strong>JS</strong> plugin for a cool typewriter effect and ')
-            .typeString('<strong>only <span style="color: #27ae60;">5kb</span> Gzipped!</strong>')
-            .pauseFor(1000)
-            .start();
 
     }
 }

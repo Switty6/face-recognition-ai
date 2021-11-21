@@ -1,7 +1,7 @@
 <template>
     <div class="lol">
-        <div class="row items-center full-height">
-            <div v-if="boot" id="typewriter" class="text-h5 col-12 text-white text-center"></div>
+        <div v-if="boot" class="row items-center full-height">
+            <div  id="typewriter" class="text-h5 col-12 text-white text-center"></div>
         </div>
         <div v-if="detector" class="row items-center full-height">
             <FaceDetector class="col-12" />
@@ -34,7 +34,7 @@ export default {
         return {
             detector: true,
             astra: false,
-            boot: true,
+            boot: false,
             gen: '',
             mood: '',
             age: '',
@@ -81,7 +81,7 @@ export default {
             },1000)
         },
         UpdateStore() {
-            while (this.detector) {
+            if (this.detector) {
                 setInterval(() => {
                     console.log("DETECTOR")
                     this.gen = store.state.user.gender
@@ -92,7 +92,7 @@ export default {
         }
     },
     mounted() {
-        this.CheckStart()
+        // this.CheckStart()
         this.DetectorCheck()
 
 
